@@ -1,6 +1,6 @@
 # mas-sec-deadlines
 
-보안/프라이버시 학회 10곳(USENIX Security, S&P, CCS, NDSS, PETs, Euro S&P, AsiaCCS, ACSAC, ESORICS, RAID)의 마감일을 실시간 카운트다운으로 보여주는 개인용 트래커입니다.
+보안/프라이버시 학회 10곳(USENIX Security, S&P, CCS, NDSS, PETs, Euro S&P, AsiaCCS, ACSAC, ESORICS, RAID)의 마감일
 
 🔗 **사이트**: https://namgyupark22.github.io/mas-sec-deadlines/
 
