@@ -1,4 +1,4 @@
-# mas-sec-deadlines
+# sec-deadlines
 
 보안/프라이버시 학회 10곳(USENIX Security, S&P, CCS, NDSS, PETs, Euro S&P, AsiaCCS, ACSAC, ESORICS, RAID)의 마감일
 
