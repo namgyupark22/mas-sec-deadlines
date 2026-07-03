@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sec-deadlines // tracked</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c10;
+    --surface:#12151c;
+    --surface2:#181c25;
+    --border:#232833;
+    --text:#e8eaed;
+    --muted:#7c8494;
+    --muted2:#4d5566;
+    --amber:#e8a33d;
+    --cyan:#5ac8c8;
+    --red:#e5484d;
+    --green:#6fcf97;
+    --mono:'IBM Plex Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(90,200,200,0.06), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(232,163,61,0.05), transparent 35%);
+  }
+  .scanlines{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.012) 0px,
+      rgba(255,255,255,0.012) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode:overlay;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:56px 24px 80px;
+  }
+  .term{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--green);
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .term .prompt{color:var(--muted2);}
+  .cursor{
+    display:inline-block;
+    width:7px; height:14px;
+    background:var(--green);
+    animation:blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+  h1{
+    font-family:var(--mono);
+    font-size:clamp(28px,4vw,42px);
+    font-weight:700;
+    letter-spacing:-0.02em;
+    margin:8px 0 4px;
+  }
+  h1 span{color:var(--muted2);}
+  .sub{
+    color:var(--muted);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:620px;
+    margin:0 0 40px;
+  }
+  .sub b{color:var(--text); font-weight:600;}
+  .meta-row{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted2);
+    margin-bottom:44px;
+    padding-bottom:24px;
+    border-bottom:1px solid var(--border);
+  }
+  .meta-row span b{color:var(--muted);}
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:22px 24px;
+    position:relative;
+    overflow:hidden;
+    transition:border-color .2s ease;
+  }
+  .card:hover{border-color:#2e3644;}
+  .card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0;
+    width:3px;
+  }
+  .card.urgent::before{background:var(--red);}
+  .card.soon::before{background:var(--amber);}
+  .card.normal::before{background:var(--cyan);}
+  .card.dormant::before{background:var(--muted2);}
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .name-block .acr{
+    font-family:var(--mono);
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .name-block .acr a{color:inherit; text-decoration:none; border-bottom:1px dotted var(--muted2);}
+  .name-block .acr a:hover{border-bottom-color:var(--cyan); color:var(--cyan);}
+  .name-block .full{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:3px;
+  }
+  .place{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted2);
+    margin-top:8px;
+  }
+  .place b{color:var(--muted);}
+
+  .countdown{
+    text-align:right;
+    min-width:210px;
+  }
+  .countdown .label{
+    font-family:var(--mono);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--muted2);
+    margin-bottom:6px;
+  }
+  .digits{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:26px;
+    letter-spacing:0.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  .card.urgent .digits{color:var(--red);}
+  .card.soon .digits{color:var(--amber);}
+  .card.normal .digits{color:var(--cyan);}
+  .card.dormant .digits{color:var(--muted2); font-size:15px;}
+  .digits .unit{
+    font-size:11px;
+    color:var(--muted2);
+    font-weight:400;
+    margin-left:2px;
+  }
+  .deadline-date{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  .cycles{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .cycle-pill{
+    font-family:var(--mono);
+    font-size:11px;
+    padding:4px 9px;
+    border-radius:5px;
+    border:1px solid var(--border);
+    color:var(--muted);
+    background:var(--surface2);
+  }
+  .cycle-pill.past{color:var(--muted2); text-decoration:line-through; opacity:.55;}
+  .cycle-pill.active{color:var(--bg); background:var(--cyan); border-color:var(--cyan); font-weight:600;}
+  .cycle-pill.active.urgent{background:var(--red); color:#fff;}
+  .cycle-pill.active.soon{background:var(--amber); color:var(--bg);}
+
+  footer{
+    margin-top:56px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted2);
+    line-height:1.8;
+    border-top:1px solid var(--border);
+    padding-top:20px;
+  }
+  footer a{color:var(--muted);}
+  footer a:hover{color:var(--cyan);}
+
+  @media (max-width:560px){
+    .card-top{flex-direction:column;}
+    .countdown{text-align:left; min-width:0;}
+  }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="wrap">
+
+  <div class="term"><span class="prompt">$</span> watch --interval=1s sec-deadlines --track usenix,sp,ccs,ndss,pets,eurosp,asiaccs,acsac,esorics,raid<span class="cursor"></span></div>
+  <h1>Sec Deadlines <span>// tracked</span></h1>
+  <p class="sub">
+    개인용으로 추린 <b>10개 학회</b>의 마감 카운트다운입니다.
+    데이터 출처: <a href="https://sec-deadlines.github.io/" style="color:var(--muted)">sec-deadlines.github.io</a>.
+    새 CFP가 뜨면 아래 데이터를 수동으로 갱신해야 합니다.
+  </p>
+
+  <div class="meta-row">
+    <span><b>10</b> conferences tracked</span>
+    <span><b id="upcoming-count">–</b> deadlines upcoming</span>
+    <span>local tz: <b id="tz-label">–</b></span>
+    <span>last data sync: <b>2026-07-02</b></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    // sorted by nearest upcoming deadline · times as published (mostly AoE, verify per-CFP) <br>
+    // source of truth: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a> — send updates via their GitHub repo<br>
+    // built for 박남규's own tracking, not affiliated with the original project
+  </footer>
+</div>
+
+<script>
+const CONFS = [
+  {
+    acr: "USENIX Security",
+    full: "USENIX Security Symposium",
+    url: "https://www.usenix.org/conference/usenixsecurity27",
+    year: "2027",
+    place: "Denver, CO, USA",
+    dates: "Aug 11–13, 2027",
+    deadlines: [
+      "2026-08-25T23:59:00-12:00",
+      "2027-01-26T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "S&P (Oakland)",
+    full: "IEEE Symposium on Security and Privacy",
+    url: "https://sp2027.ieee-security.org/",
+    year: "2027",
+    place: "Montreal, Canada",
+    dates: "TBA",
+    deadlines: [
+      "2026-06-11T23:59:00-12:00",
+      "2026-11-17T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "CCS",
+    full: "ACM Conference on Computer and Communications Security",
+    url: "https://www.sigsac.org/ccs/CCS2026",
+    year: "2026",
+    place: "The Hague, Netherlands",
+    dates: "Nov 15–19, 2026",
+    deadlines: [
+      "2026-01-14T23:59:00-12:00",
+      "2026-04-29T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "NDSS",
+    full: "ISOC Network and Distributed System Security Symposium",
+    url: "https://www.ndss-symposium.org/ndss2027/submissions/call-for-papers/",
+    year: "2027",
+    place: "Seoul, Republic of Korea",
+    dates: "Mar 22–26, 2027",
+    deadlines: [
+      "2026-05-06T23:59:00-12:00",
+      "2026-08-19T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "PETS",
+    full: "Privacy Enhancing Technologies Symposium",
+    url: "https://www.petsymposium.org/cfp27.php",
+    year: "2027",
+    place: "Delft, Netherlands",
+    dates: "Jul 19–24, 2027",
+    deadlines: [
+      "2026-05-31T23:59:00-12:00",
+      "2026-08-31T23:59:00-12:00",
+      "2026-11-30T23:59:00-12:00",
+      "2027-02-28T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "Euro S&P",
+    full: "IEEE European Symposium on Security and Privacy",
+    url: "https://eurosp2026.ieee-security.org/",
+    year: "2026",
+    place: "Lisbon, Portugal",
+    dates: "Jul 6–10, 2026",
+    deadlines: [
+      "2025-11-20T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "AsiaCCS",
+    full: "ACM Asia Conference on Computer and Communications Security",
+    url: "https://asiaccs2027.cityu.edu.mo/home/index.html",
+    year: "2027",
+    place: "Macau",
+    dates: "Jul 12–16, 2027",
+    deadlines: [
+      "2026-08-21T23:59:00-12:00",
+      "2026-12-11T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "ACSAC",
+    full: "Annual Computer Security Applications Conference",
+    url: "https://www.acsac.org/2026/submissions/papers/",
+    year: "2026",
+    place: "Los Angeles, CA, USA",
+    dates: "Dec 7–11, 2026",
+    deadlines: [
+      "2026-05-26T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "ESORICS",
+    full: "European Symposium on Research in Computer Security",
+    url: "https://sites.google.com/di.uniroma1.it/esorics2026/",
+    year: "2026",
+    place: "Rome, Italy",
+    dates: "Sep 14–18, 2026",
+    deadlines: [
+      "2026-01-09T23:59:00-12:00",
+      "2026-04-21T23:59:00-12:00"
+    ]
+  },
+  {
+    acr: "RAID",
+    full: "International Symposium on Research in Attacks, Intrusions and Defenses",
+    url: "https://raid2026.org",
+    year: "2026",
+    place: "Lancaster, UK",
+    dates: "Oct 11–14, 2026",
+    deadlines: [
+      "2026-04-16T23:59:00-12:00"
+    ]
+  }
+];
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function classify(diffMs){
+  const days = diffMs / 86400000;
+  if (diffMs <= 0) return 'dormant';
+  if (days <= 7) return 'urgent';
+  if (days <= 30) return 'soon';
+  return 'normal';
+}
+
+function fmtDigits(diffMs){
+  if (diffMs <= 0) return null;
+  const s = Math.floor(diffMs/1000);
+  const d = Math.floor(s/86400);
+  const h = Math.floor((s%86400)/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  return {d,h,m,sec};
+}
+
+function fmtDate(dateObj){
+  const opts = { year:'numeric', month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit' };
+  return dateObj.toLocaleString(undefined, opts);
+}
+
+function build(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  const now = Date.now();
+
+  // build render list: one card per conference, using nearest future deadline
+  // if none future, use last (past) deadline for dormant styling
+  const rows = CONFS.map(c => {
+    const parsed = c.deadlines.map(ds => new Date(ds));
+    let future = parsed.filter(dt => dt.getTime() > now).sort((a,b)=>a-b);
+    let activeIdx;
+    let activeDate;
+    if (future.length){
+      activeDate = future[0];
+      activeIdx = parsed.findIndex(dt => dt.getTime() === activeDate.getTime());
+    } else {
+      activeDate = parsed[parsed.length-1];
+      activeIdx = parsed.length-1;
+    }
+    return { conf:c, parsed, activeDate, activeIdx, diff: activeDate.getTime()-now };
+  });
+
+  rows.sort((a,b)=>{
+    const aFuture = a.diff > 0, bFuture = b.diff > 0;
+    if (aFuture && !bFuture) return -1;
+    if (!aFuture && bFuture) return 1;
+    if (aFuture && bFuture) return a.diff - b.diff;
+    return b.diff - a.diff; // both past: most recently passed first
+  });
+
+  document.getElementById('upcoming-count').textContent =
+    rows.filter(r=>r.diff>0).length;
+  document.getElementById('tz-label').textContent =
+    Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  rows.forEach(row => {
+    const cls = classify(row.diff);
+    const card = document.createElement('div');
+    card.className = 'card ' + cls;
+
+    const digitsHtml = (() => {
+      const dg = fmtDigits(row.diff);
+      if (!dg) return `<div class="digits">closed</div>`;
+      return `<div class="digits">${dg.d}<span class="unit">d</span> ${pad(dg.h)}<span class="unit">h</span> ${pad(dg.m)}<span class="unit">m</span> ${pad(dg.sec)}<span class="unit">s</span></div>`;
+    })();
+
+    const cyclesHtml = row.parsed.map((dt, i) => {
+      const isPast = dt.getTime() <= now;
+      const isActive = i === row.activeIdx;
+      let pillClass = 'cycle-pill';
+      if (isPast) pillClass += ' past';
+      if (isActive && !isPast) pillClass += ' active ' + (cls==='urgent'?'urgent':cls==='soon'?'soon':'');
+      const label = row.parsed.length > 1 ? `${i+1}/${row.parsed.length} · ` : '';
+      return `<span class="${pillClass}">${label}${dt.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'})}</span>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="name-block">
+          <div class="acr"><a href="${row.conf.url}" target="_blank" rel="noopener">${row.conf.acr} ${row.conf.year}</a></div>
+          <div class="full">${row.conf.full}</div>
+          <div class="place"><b>${row.conf.place}</b> · ${row.conf.dates}</div>
+        </div>
+        <div class="countdown">
+          <div class="label">${row.diff>0 ? 'next deadline in' : 'last known deadline'}</div>
+          ${digitsHtml}
+          <div class="deadline-date">${fmtDate(row.activeDate)}</div>
+        </div>
+      </div>
+      ${row.parsed.length ? `<div class="cycles">${cyclesHtml}</div>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+build();
+setInterval(build, 1000);
+</script>
+</body>
+</html>
