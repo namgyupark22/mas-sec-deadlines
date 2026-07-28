@@ -66,9 +66,41 @@
     font-family:var(--mono);
     font-size:12px;
     color:var(--muted2);
-    margin:16px 0 36px;
+    margin:16px 0 20px;
   }
   .meta-row b{color:var(--muted);}
+
+  .filter-tabs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .filter-tab{
+    font-family:var(--sans);
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:6px 14px;
+    cursor:pointer;
+  }
+  .filter-tab .count{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted2);
+    margin-left:2px;
+  }
+  .filter-tab:hover{border-color:var(--muted2);}
+  .filter-tab.active{
+    background:var(--text);
+    color:#fff;
+    border-color:var(--text);
+  }
+  .filter-tab.active .count{color:#cfcfcf;}
+
   .legend{
     display:flex;
     gap:14px;
@@ -116,6 +148,21 @@
   }
   .name-block .acr a{color:var(--text); text-decoration:none;}
   .name-block .acr a:hover{color:var(--link); text-decoration:underline;}
+  .cat-chip{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:9.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    padding:2px 6px;
+    border-radius:4px;
+    margin-left:8px;
+    vertical-align:middle;
+  }
+  .cat-chip.security{background:#eef2ff; color:#4338ca;}
+  .cat-chip.ai3{background:#ecfeff; color:#0e7490;}
+  .cat-chip.ai4{background:#fdf4ff; color:#a21caf;}
   .name-block .full{
     color:var(--muted);
     font-size:13.5px;
@@ -232,17 +279,20 @@
   <header>
     <h1>Conference Deadline</h1>
     <p class="sub">
-      부서탑티어 기준 <b>9개 보안·프라이버시 학회</b>의 마감 카운트다운입니다.
-      원본 데이터: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a>
+      보안·프라이버시(Security) 및 AI 상위 학회의 마감 카운트다운입니다.
+      Security 원본 데이터: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a> ·
+      AI 학회는 각 공식 CFP 페이지를 직접 확인해 반영합니다.
     </p>
   </header>
 
   <div class="meta-row">
-    <span><b>10</b> conferences tracked</span>
+    <span><b id="total-count">–</b> conferences tracked</span>
     <span><b id="upcoming-count">–</b> deadlines upcoming</span>
     <span>tz: <b id="tz-label">–</b></span>
-    <span>last data sync: <b>2026-07-02</b></span>
+    <span>last data sync: <b>2026-07-27</b></span>
   </div>
+
+  <div class="filter-tabs" id="filter-tabs"></div>
 
   <div class="legend">
     <span><span class="dot red"></span>7일 이내</span>
@@ -255,14 +305,19 @@
 
   <footer>
     // sorted by nearest upcoming deadline · times mostly AoE (Anywhere on Earth), verify per-CFP <br>
-    // source of truth: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a> — send updates via their GitHub repo<br>
+    // security source of truth: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a> — send updates via their GitHub repo<br>
+    // AI 학회 중 다음 CFP가 아직 공개되지 않은 경우 날짜를 임의로 채우지 않고 "CFP 대기"로 표시합니다<br>
     // built for 박남규's own tracking, not affiliated with the original project
   </footer>
 </div>
 
 <script>
+const CATEGORY_LABEL = { security: 'Security', ai3: 'AI3', ai4: 'AI4' };
+
 const CONFS = [
+  // ── Security ──────────────────────────────────────────────
   {
+    category: "security",
     acr: "USENIX Security",
     full: "USENIX Security Symposium",
     url: "https://www.usenix.org/conference/usenixsecurity27",
@@ -275,6 +330,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "S&P (Oakland)",
     full: "IEEE Symposium on Security and Privacy",
     url: "https://sp2027.ieee-security.org/",
@@ -287,6 +343,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "CCS",
     full: "ACM Conference on Computer and Communications Security",
     url: "https://www.sigsac.org/ccs/CCS2026",
@@ -299,6 +356,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "NDSS",
     full: "ISOC Network and Distributed System Security Symposium",
     url: "https://www.ndss-symposium.org/ndss2027/submissions/call-for-papers/",
@@ -311,6 +369,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "Euro S&P",
     full: "IEEE European Symposium on Security and Privacy",
     url: "https://eurosp2026.ieee-security.org/",
@@ -322,6 +381,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "AsiaCCS",
     full: "ACM Asia Conference on Computer and Communications Security",
     url: "https://asiaccs2027.cityu.edu.mo/home/index.html",
@@ -334,6 +394,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "ACSAC",
     full: "Annual Computer Security Applications Conference",
     url: "https://www.acsac.org/2026/submissions/papers/",
@@ -345,6 +406,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "ESORICS",
     full: "European Symposium on Research in Computer Security",
     url: "https://sites.google.com/di.uniroma1.it/esorics2026/",
@@ -357,6 +419,7 @@ const CONFS = [
     ]
   },
   {
+    category: "security",
     acr: "RAID",
     full: "International Symposium on Research in Attacks, Intrusions and Defenses",
     url: "https://raid2026.org",
@@ -366,6 +429,212 @@ const CONFS = [
     deadlines: [
       { date: "2026-04-16T23:59:00-12:00", label: "마감" }
     ]
+  },
+
+  // ── AI3 ───────────────────────────────────────────────────
+  {
+    category: "ai3",
+    acr: "AAMAS",
+    full: "International Conference on Autonomous Agents and Multiagent Systems",
+    url: "https://warwick.ac.uk/fac/sci/dcs/aamas2027/",
+    year: "2027",
+    place: "Hanoi, Vietnam",
+    dates: "May 3–7, 2027",
+    deadlines: []
+  },
+  {
+    category: "ai3",
+    acr: "ACM MM",
+    full: "ACM International Conference on Multimedia",
+    url: "https://2026.acmmm.org/",
+    year: "2026",
+    place: "Rio de Janeiro, Brazil",
+    dates: "Nov 10–14, 2026",
+    deadlines: [
+      { date: "2026-03-25T23:59:00-12:00", label: "Abstract (등록)" },
+      { date: "2026-04-01T23:59:00-12:00", label: "Full Paper" },
+      { date: "2026-04-08T23:59:00-12:00", label: "부속자료 제출" }
+    ]
+  },
+  {
+    category: "ai3",
+    acr: "AISTATS",
+    full: "International Conference on Artificial Intelligence and Statistics",
+    url: "https://virtual.aistats.org/",
+    year: "2027",
+    place: "TBA",
+    dates: "TBA",
+    deadlines: []
+  },
+  {
+    category: "ai3",
+    acr: "CICLing",
+    full: "International Conference on Computational Linguistics and Intelligent Text Processing",
+    url: "http://www.cicling.org/",
+    year: "–",
+    place: "TBA",
+    dates: "비활성 추정 (2019년 이후 개최 확인 안됨)",
+    deadlines: []
+  },
+  {
+    category: "ai3",
+    acr: "COLING",
+    full: "32nd International Conference on Computational Linguistics",
+    url: "https://2027.coling-iccl.org/",
+    year: "2027",
+    place: "Macau, China",
+    dates: "May 9–14, 2027",
+    deadlines: [
+      { date: "2026-10-12T23:59:59-12:00", label: "ARR Oct 2026 커밋 마감" }
+    ]
+  },
+  {
+    category: "ai3",
+    acr: "CoNLL",
+    full: "Conference on Computational Natural Language Learning",
+    url: "https://www.conll.org/",
+    year: "2027",
+    place: "TBA",
+    dates: "TBA (2027 CFP 미공개)",
+    deadlines: []
+  },
+  {
+    category: "ai3",
+    acr: "EACL",
+    full: "20th Conference of the European Chapter of the ACL",
+    url: "https://2027.eacl.org/",
+    year: "2027",
+    place: "Athens, Greece",
+    dates: "Mar 9–14, 2027",
+    deadlines: [
+      { date: "2026-08-03T23:59:59-12:00", label: "ARR 제출" },
+      { date: "2026-10-11T23:59:59-12:00", label: "EACL 커밋 마감" }
+    ]
+  },
+  {
+    category: "ai3",
+    acr: "IJCNLP",
+    full: "5th AACL & 15th IJCNLP (AACL-IJCNLP 2026)",
+    url: "https://2026.aaclnet.org/",
+    year: "2026",
+    place: "Hengqin, China",
+    dates: "Nov 6–10, 2026",
+    deadlines: [
+      { date: "2026-05-25T23:59:59-12:00", label: "ARR 제출" },
+      { date: "2026-08-02T23:59:59-12:00", label: "커밋 마감" }
+    ]
+  },
+  {
+    category: "ai3",
+    acr: "KDD",
+    full: "ACM SIGKDD Conference on Knowledge Discovery and Data Mining",
+    url: "https://kdd2027.kdd.org/research-track-call-for-papers/",
+    year: "2027",
+    place: "San Jose, CA, USA",
+    dates: "Aug 1–5, 2027",
+    deadlines: [
+      { date: "2026-07-19T23:59:59-12:00", label: "1차 Abstract" },
+      { date: "2026-07-26T23:59:59-12:00", label: "1차 Full Paper" }
+    ]
+  },
+
+  // ── AI4 ───────────────────────────────────────────────────
+  {
+    category: "ai4",
+    acr: "AAAI",
+    full: "41st AAAI Conference on Artificial Intelligence",
+    url: "https://aaai.org/conference/aaai/aaai-27/main-technical-track-call/",
+    year: "2027",
+    place: "Montréal, Canada",
+    dates: "Feb 16–23, 2027",
+    deadlines: [
+      { date: "2026-07-21T23:59:59-12:00", label: "Abstract" },
+      { date: "2026-07-28T23:59:59-12:00", label: "Full Paper" },
+      { date: "2026-07-31T23:59:59-12:00", label: "부속자료/코드" }
+    ]
+  },
+  {
+    category: "ai4",
+    acr: "ACL",
+    full: "65th Annual Meeting of the Association for Computational Linguistics",
+    url: "https://2027.aclweb.org/",
+    year: "2027",
+    place: "Kyoto, Japan",
+    dates: "Aug 17–22, 2027",
+    deadlines: []
+  },
+  {
+    category: "ai4",
+    acr: "EMNLP",
+    full: "Conference on Empirical Methods in Natural Language Processing",
+    url: "https://2026.emnlp.org/calls/main_conference_papers/",
+    year: "2026",
+    place: "Budapest, Hungary",
+    dates: "Oct 24–29, 2026",
+    deadlines: [
+      { date: "2026-05-25T23:59:59-12:00", label: "ARR 제출" },
+      { date: "2026-08-02T23:59:59-12:00", label: "커밋 마감" },
+      { date: "2026-08-20T23:59:59-12:00", label: "결과 통보" },
+      { date: "2026-08-30T23:59:59-12:00", label: "Camera-ready" }
+    ]
+  },
+  {
+    category: "ai4",
+    acr: "ICLR",
+    full: "International Conference on Learning Representations",
+    url: "https://iclr.cc/Conferences/FutureMeetings",
+    year: "2027",
+    place: "West Coast North America (TBA)",
+    dates: "TBA",
+    deadlines: []
+  },
+  {
+    category: "ai4",
+    acr: "IJCAI",
+    full: "International Joint Conference on Artificial Intelligence (IJCAI-ECAI 2026)",
+    url: "https://2026.ijcai.org/ijcai-ecai-2026-call-for-papers-main-track/",
+    year: "2026",
+    place: "Bremen, Germany",
+    dates: "Aug 15–21, 2026",
+    deadlines: [
+      { date: "2026-01-12T23:59:00-12:00", label: "Abstract" },
+      { date: "2026-01-19T23:59:00-12:00", label: "Full Paper" }
+    ]
+  },
+  {
+    category: "ai4",
+    acr: "NAACL",
+    full: "NAACL-HLT 2027 (Nations of the Americas Chapter of the ACL)",
+    url: "https://2027.naacl.org/",
+    year: "2027",
+    place: "San Francisco, CA, USA",
+    dates: "Jun 1–5, 2027",
+    deadlines: [
+      { date: "2026-10-12T23:59:00-12:00", label: "제출 마감 (ARR)" }
+    ]
+  },
+  {
+    category: "ai4",
+    acr: "NeurIPS",
+    full: "Fortieth Annual Conference on Neural Information Processing Systems",
+    url: "https://neurips.cc/Conferences/2026/CallForPapers",
+    year: "2026",
+    place: "Sydney, Australia",
+    dates: "Dec 6–12, 2026",
+    deadlines: [
+      { date: "2026-05-04T23:59:00-12:00", label: "Abstract" },
+      { date: "2026-05-06T23:59:00-12:00", label: "Full Paper" }
+    ]
+  },
+  {
+    category: "ai4",
+    acr: "ICML",
+    full: "International Conference on Machine Learning",
+    url: "https://icml.cc/Conferences/FutureMeetings",
+    year: "2027",
+    place: "South America (TBA)",
+    dates: "TBA",
+    deadlines: []
   }
 ];
 
@@ -395,21 +664,45 @@ function fmtDate(dateObj){
   return dateObj.toLocaleString(undefined, opts);
 }
 
+let activeFilter = 'all';
+
+function setupFilters(){
+  const bar = document.getElementById('filter-tabs');
+  const cats = [
+    { key:'all', label:'전체' },
+    { key:'security', label:'Security' },
+    { key:'ai3', label:'AI3' },
+    { key:'ai4', label:'AI4' }
+  ];
+  bar.innerHTML = cats.map(c => {
+    const count = c.key === 'all' ? CONFS.length : CONFS.filter(x => x.category === c.key).length;
+    const cls = 'filter-tab' + (c.key === activeFilter ? ' active' : '');
+    return `<button class="${cls}" data-key="${c.key}">${c.label} <span class="count">${count}</span></button>`;
+  }).join('');
+  bar.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.key;
+      setupFilters();
+      build();
+    });
+  });
+}
+
 function build(){
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
   const now = Date.now();
 
-  const rows = CONFS.map(c => {
-    const parsed = c.deadlines.map(dl => ({ ...dl, dt: new Date(dl.date) }));
-    let future = parsed.filter(p => p.dt.getTime() > now).sort((a,b)=>a.dt-b.dt);
-    let active;
-    if (future.length){
-      active = future[0];
-    } else {
-      active = parsed[parsed.length-1];
+  const source = activeFilter === 'all' ? CONFS : CONFS.filter(c => c.category === activeFilter);
+
+  const rows = source.map(c => {
+    const parsed = (c.deadlines || []).map(dl => ({ ...dl, dt: new Date(dl.date) }));
+    if (!parsed.length){
+      return { conf:c, parsed:[], active:null, diff:-Infinity, pending:true };
     }
-    return { conf:c, parsed, active, diff: active.dt.getTime()-now };
+    let future = parsed.filter(p => p.dt.getTime() > now).sort((a,b)=>a.dt-b.dt);
+    let active = future.length ? future[0] : parsed[parsed.length-1];
+    return { conf:c, parsed, active, diff: active.dt.getTime()-now, pending:false };
   });
 
   rows.sort((a,b)=>{
@@ -424,17 +717,25 @@ function build(){
     rows.filter(r=>r.diff>0).length;
   document.getElementById('tz-label').textContent =
     Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.getElementById('total-count').textContent = CONFS.length;
 
   rows.forEach(row => {
-    const cls = classify(row.diff);
+    const cls = row.pending ? 'dormant' : classify(row.diff);
     const card = document.createElement('div');
     card.className = 'card ' + cls;
 
+    const badgeLabel = row.pending ? 'CFP 대기' : badgeText[cls];
+
     const digitsHtml = (() => {
+      if (row.pending) return `<div class="digits" style="font-size:16px;">TBA</div>`;
       const dg = fmtDigits(row.diff);
       if (!dg) return `<div class="digits">closed</div>`;
       return `<div class="digits">${dg.d}<span class="unit">d</span> ${pad(dg.h)}<span class="unit">h</span> ${pad(dg.m)}<span class="unit">m</span> ${pad(dg.sec)}<span class="unit">s</span></div>`;
     })();
+
+    const dateLineHtml = row.pending
+      ? `<div class="deadline-date">다음 CFP 공개 대기 중</div>`
+      : `<div class="deadline-date">${fmtDate(row.active.dt)} (${row.active.label})</div>`;
 
     const cyclesHtml = row.parsed.map(p => {
       const isPast = p.dt.getTime() <= now;
@@ -454,14 +755,14 @@ function build(){
     card.innerHTML = `
       <div class="card-top">
         <div class="name-block">
-          <div class="acr"><a href="${row.conf.url}" target="_blank" rel="noopener">${row.conf.acr} ${row.conf.year}</a></div>
+          <div class="acr"><a href="${row.conf.url}" target="_blank" rel="noopener">${row.conf.acr} ${row.conf.year}</a><span class="cat-chip ${row.conf.category}">${CATEGORY_LABEL[row.conf.category]}</span></div>
           <div class="full">${row.conf.full}</div>
           <div class="place"><b>${row.conf.place}</b> · ${row.conf.dates}</div>
         </div>
         <div class="countdown">
-          <span class="badge ${cls}">${badgeText[cls]}</span>
+          <span class="badge ${cls}">${badgeLabel}</span>
           ${digitsHtml}
-          <div class="deadline-date">${fmtDate(row.active.dt)} (${row.active.label})</div>
+          ${dateLineHtml}
         </div>
       </div>
       ${row.parsed.length > 1 ? `<div class="cycles">${cyclesHtml}</div>` : ''}
@@ -470,6 +771,7 @@ function build(){
   });
 }
 
+setupFilters();
 build();
 setInterval(build, 1000);
 </script>
