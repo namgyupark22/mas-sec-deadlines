@@ -197,62 +197,46 @@
   .badge.normal{background:var(--green-bg); color:var(--green);}
   .badge.dormant{background:#eee; color:var(--muted2);}
 
-  .digits{
+  .dl-list{
+    margin-top:10px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:flex-end;
+  }
+  .dl-item .dl-label{
+    font-family:var(--mono);
+    font-size:10px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted2);
+    margin-bottom:2px;
+  }
+  .dl-item .dl-digits{
     font-family:var(--mono);
     font-weight:700;
-    font-size:26px;
+    font-size:21px;
     letter-spacing:0.005em;
     font-variant-numeric:tabular-nums;
   }
-  .card.urgent .digits{color:var(--red);}
-  .card.soon .digits{color:var(--orange);}
-  .card.normal .digits{color:var(--green);}
-  .card.dormant .digits{color:var(--muted2); font-size:16px;}
-  .digits .unit{
-    font-size:11px;
+  .dl-item .dl-digits .unit{
+    font-size:10.5px;
     color:var(--muted2);
     font-weight:400;
     margin-left:1px;
   }
-  .deadline-date{
+  .dl-item .dl-date{
     font-family:var(--mono);
-    font-size:11.5px;
+    font-size:11px;
     color:var(--muted);
-    margin-top:6px;
+    margin-top:3px;
   }
-
-  .cycles{
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px dashed var(--border);
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .cycle-row{
-    display:flex;
-    align-items:baseline;
-    gap:8px;
-    font-size:12.5px;
-    color:var(--muted);
-  }
-  .cycle-row .tag{
-    font-family:var(--mono);
-    font-size:10.5px;
-    font-weight:600;
-    color:var(--muted2);
-    min-width:150px;
-  }
-  .cycle-row.active{color:var(--text); font-weight:600;}
-  .cycle-row.past{color:var(--muted2); text-decoration:line-through;}
-  .cycle-row .dday{
-    margin-left:auto;
-    font-family:var(--mono);
-    font-size:11.5px;
-    font-weight:700;
-    color:var(--muted);
-  }
-  .cycle-row.active .dday{color:var(--red);}
+  .dl-item.urgent .dl-digits{color:var(--red);}
+  .dl-item.soon .dl-digits{color:var(--orange);}
+  .dl-item.normal .dl-digits{color:var(--green);}
+  .dl-item.past .dl-digits{color:var(--muted2); font-size:15px;}
+  .dl-item.past .dl-date{color:var(--muted2); text-decoration:line-through;}
 
   footer{
     margin-top:52px;
@@ -269,7 +253,7 @@
   @media (max-width:560px){
     .card-top{flex-direction:column;}
     .countdown{text-align:left; min-width:0;}
-    .cycle-row .tag{min-width:120px;}
+    .dl-list{align-items:flex-start;}
   }
 </style>
 </head>
@@ -726,31 +710,22 @@ function build(){
 
     const badgeLabel = row.pending ? 'CFP 대기' : badgeText[cls];
 
-    const digitsHtml = (() => {
-      if (row.pending) return `<div class="digits" style="font-size:16px;">TBA</div>`;
-      const dg = fmtDigits(row.diff);
-      if (!dg) return `<div class="digits">closed</div>`;
-      return `<div class="digits">${dg.d}<span class="unit">d</span> ${pad(dg.h)}<span class="unit">h</span> ${pad(dg.m)}<span class="unit">m</span> ${pad(dg.sec)}<span class="unit">s</span></div>`;
-    })();
-
-    const dateLineHtml = row.pending
-      ? `<div class="deadline-date">다음 CFP 공개 대기 중</div>`
-      : `<div class="deadline-date">${fmtDate(row.active.dt)} (${row.active.label})</div>`;
-
-    const cyclesHtml = row.parsed.map(p => {
-      const isPast = p.dt.getTime() <= now;
-      const isActive = p === row.active;
-      let rowClass = 'cycle-row';
-      if (isPast) rowClass += ' past';
-      if (isActive && !isPast) rowClass += ' active';
-      const pDiff = p.dt.getTime() - now;
-      const dday = isPast ? '' : `<span class="dday">D-${Math.ceil(pDiff/86400000)}</span>`;
-      return `<div class="${rowClass}">
-        <span class="tag">${p.label}</span>
-        <span>${p.dt.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'})}</span>
-        ${dday}
-      </div>`;
-    }).join('');
+    const dlListHtml = row.pending
+      ? `<div class="dl-list"><div class="dl-item past"><div class="dl-digits" style="font-size:16px;">TBA</div><div class="dl-date">다음 CFP 공개 대기 중</div></div></div>`
+      : `<div class="dl-list">${row.parsed.map(p => {
+          const pDiff = p.dt.getTime() - now;
+          const isPast = pDiff <= 0;
+          const dCls = isPast ? 'past' : classify(pDiff);
+          const dg = isPast ? null : fmtDigits(pDiff);
+          const digitsInner = dg
+            ? `${dg.d}<span class="unit">d</span> ${pad(dg.h)}<span class="unit">h</span> ${pad(dg.m)}<span class="unit">m</span> ${pad(dg.sec)}<span class="unit">s</span>`
+            : '마감';
+          return `<div class="dl-item ${dCls}">
+            <div class="dl-label">${p.label}</div>
+            <div class="dl-digits">${digitsInner}</div>
+            <div class="dl-date">${fmtDate(p.dt)}</div>
+          </div>`;
+        }).join('')}</div>`;
 
     card.innerHTML = `
       <div class="card-top">
@@ -761,11 +736,9 @@ function build(){
         </div>
         <div class="countdown">
           <span class="badge ${cls}">${badgeLabel}</span>
-          ${digitsHtml}
-          ${dateLineHtml}
+          ${dlListHtml}
         </div>
       </div>
-      ${row.parsed.length > 1 ? `<div class="cycles">${cyclesHtml}</div>` : ''}
     `;
     grid.appendChild(card);
   });
