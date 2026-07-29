@@ -163,6 +163,7 @@
   .cat-chip.security{background:#eef2ff; color:#4338ca;}
   .cat-chip.ai3{background:#ecfeff; color:#0e7490;}
   .cat-chip.ai4{background:#fdf4ff; color:#a21caf;}
+  .cat-chip.plse{background:#f0fdf4; color:#15803d;}
   .name-block .full{
     color:var(--muted);
     font-size:13.5px;
@@ -263,9 +264,9 @@
   <header>
     <h1>Conference Deadline</h1>
     <p class="sub">
-      보안·프라이버시(Security) 및 AI 상위 학회의 마감 카운트다운입니다.
+      보안·프라이버시(Security), AI 상위 학회, PL/SE 학회의 마감 카운트다운입니다.
       Security 원본 데이터: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a> ·
-      AI 학회는 각 공식 CFP 페이지를 직접 확인해 반영합니다.
+      AI/PL/SE 학회는 각 공식 CFP 페이지를 직접 확인해 반영합니다. PL/SE는 "전체"에는 포함되지 않고 별도 탭에서 볼 수 있습니다.
     </p>
   </header>
 
@@ -273,7 +274,7 @@
     <span><b id="total-count">–</b> conferences tracked</span>
     <span><b id="upcoming-count">–</b> deadlines upcoming</span>
     <span>tz: <b id="tz-label">–</b></span>
-    <span>last data sync: <b>2026-07-27</b></span>
+    <span>last data sync: <b>2026-07-29</b></span>
   </div>
 
   <div class="filter-tabs" id="filter-tabs"></div>
@@ -296,7 +297,7 @@
 </div>
 
 <script>
-const CATEGORY_LABEL = { security: 'Security', ai3: 'AI3', ai4: 'AI4' };
+const CATEGORY_LABEL = { security: 'Security', ai3: 'AI3', ai4: 'AI4', plse: 'PL/SE' };
 
 const CONFS = [
   // ── Security ──────────────────────────────────────────────
@@ -607,6 +608,89 @@ const CONFS = [
     place: "South America (TBA)",
     dates: "TBA",
     deadlines: []
+  },
+
+  // ── PL/SE (별도 섹션 — 전체 필터에는 포함하지 않음) ──────────
+  {
+    category: "plse",
+    acr: "ICSE",
+    full: "International Conference on Software Engineering",
+    url: "https://conf.researchr.org/home/icse-2027",
+    year: "2027",
+    place: "Dublin, Ireland",
+    dates: "Apr 25–May 1, 2027",
+    deadlines: [
+      { date: "2026-06-30T23:59:59-12:00", label: "마감" }
+    ]
+  },
+  {
+    category: "plse",
+    acr: "POPL",
+    full: "ACM SIGPLAN Symposium on Principles of Programming Languages",
+    url: "https://popl27.sigplan.org/",
+    year: "2027",
+    place: "Mexico City, Mexico",
+    dates: "Jan 10–16, 2027",
+    deadlines: [
+      { date: "2026-07-09T23:59:00-12:00", label: "마감" }
+    ]
+  },
+  {
+    category: "plse",
+    acr: "OOPSLA",
+    full: "Object-Oriented Programming, Systems, Languages & Applications (part of SPLASH)",
+    url: "https://2026.splashcon.org/track/oopsla-2026",
+    year: "2026",
+    place: "Oakland, CA, USA",
+    dates: "Oct 3–9, 2026",
+    deadlines: [
+      { date: "2025-10-10T23:59:59-12:00", label: "1차 마감" },
+      { date: "2026-03-17T23:59:59-12:00", label: "2차 마감" }
+    ]
+  },
+  {
+    category: "plse",
+    acr: "ISSTA",
+    full: "ACM SIGSOFT International Symposium on Software Testing and Analysis",
+    url: "https://conf.researchr.org/home/issta-2026",
+    year: "2026",
+    place: "Oakland, CA, USA",
+    dates: "Oct 3–9, 2026",
+    deadlines: [
+      { date: "2026-01-29T23:59:00-12:00", label: "마감" }
+    ]
+  },
+  {
+    category: "plse",
+    acr: "ASE",
+    full: "IEEE/ACM International Conference on Automated Software Engineering",
+    url: "https://ase-conferences.org/",
+    year: "2027",
+    place: "TBA",
+    dates: "TBA",
+    deadlines: []
+  },
+  {
+    category: "plse",
+    acr: "PLDI",
+    full: "ACM SIGPLAN Conference on Programming Language Design and Implementation",
+    url: "https://pldi27.sigplan.org/",
+    year: "2027",
+    place: "Atlanta, GA, USA",
+    dates: "Jun 5–11, 2027",
+    deadlines: []
+  },
+  {
+    category: "plse",
+    acr: "FSE",
+    full: "ACM International Conference on the Foundations of Software Engineering",
+    url: "https://conf.researchr.org/track/fse-2027/fse-2027-papers",
+    year: "2027",
+    place: "Shenzhen, China",
+    dates: "Jul 12–16, 2027",
+    deadlines: [
+      { date: "2026-10-02T23:59:59-12:00", label: "마감" }
+    ]
   }
 ];
 
@@ -638,16 +722,23 @@ function fmtDate(dateObj){
 
 let activeFilter = 'all';
 
+// "전체"는 security/ai3/ai4만 포함하고 PL/SE는 별도 탭에서만 보임
+function inFilter(c, key){
+  if (key === 'all') return c.category !== 'plse';
+  return c.category === key;
+}
+
 function setupFilters(){
   const bar = document.getElementById('filter-tabs');
   const cats = [
     { key:'all', label:'전체' },
     { key:'security', label:'Security' },
     { key:'ai3', label:'AI3' },
-    { key:'ai4', label:'AI4' }
+    { key:'ai4', label:'AI4' },
+    { key:'plse', label:'PL/SE' }
   ];
   bar.innerHTML = cats.map(c => {
-    const count = c.key === 'all' ? CONFS.length : CONFS.filter(x => x.category === c.key).length;
+    const count = CONFS.filter(x => inFilter(x, c.key)).length;
     const cls = 'filter-tab' + (c.key === activeFilter ? ' active' : '');
     return `<button class="${cls}" data-key="${c.key}">${c.label} <span class="count">${count}</span></button>`;
   }).join('');
@@ -665,7 +756,7 @@ function build(){
   grid.innerHTML = '';
   const now = Date.now();
 
-  const source = activeFilter === 'all' ? CONFS : CONFS.filter(c => c.category === activeFilter);
+  const source = CONFS.filter(c => inFilter(c, activeFilter));
 
   const rows = source.map(c => {
     const parsed = (c.deadlines || []).map(dl => ({ ...dl, dt: new Date(dl.date) }));
@@ -689,7 +780,7 @@ function build(){
     rows.filter(r=>r.diff>0).length;
   document.getElementById('tz-label').textContent =
     Intl.DateTimeFormat().resolvedOptions().timeZone;
-  document.getElementById('total-count').textContent = CONFS.length;
+  document.getElementById('total-count').textContent = source.length;
 
   rows.forEach(row => {
     const cls = row.pending ? 'dormant' : classify(row.diff);
