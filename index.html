@@ -274,7 +274,7 @@
     <span><b id="total-count">–</b> conferences tracked</span>
     <span><b id="upcoming-count">–</b> deadlines upcoming</span>
     <span>tz: <b id="tz-label">–</b></span>
-    <span>last data sync: <b>2026-09-07</b></span>
+    <span>last data sync: <b>2026-09-21</b></span>
   </div>
 
   <div class="filter-tabs" id="filter-tabs"></div>
@@ -291,7 +291,7 @@
   <footer>
     // sorted by nearest upcoming deadline · times mostly AoE (Anywhere on Earth), verify per-CFP <br>
     // security source of truth: <a href="https://sec-deadlines.github.io/" target="_blank">sec-deadlines.github.io</a> — send updates via their GitHub repo<br>
-    // AI 학회 중 다음 CFP가 아직 공개되지 않은 경우 날짜를 임의로 채우지 않고 "CFP 대기"로 표시합니다<br>
+    // 모든 마감이 지난 학회는 다음 회차로 넘기고, 다음 CFP가 공개되지 않았으면 날짜를 임의로 채우지 않고 "CFP 대기"로 표시합니다<br>
     // built for 박남규's own tracking, not affiliated with the original project
   </footer>
 </div>
@@ -321,7 +321,7 @@ const CONFS = [
     url: "https://sp2027.ieee-security.org/",
     year: "2027",
     place: "Montreal, Canada",
-    dates: "TBA",
+    dates: "May 17–20, 2027",
     deadlines: [
       { date: "2026-06-11T23:59:00-12:00", label: "1차 마감" },
       { date: "2026-11-17T23:59:00-12:00", label: "2차 마감" }
@@ -331,38 +331,32 @@ const CONFS = [
     category: "security",
     acr: "CCS",
     full: "ACM Conference on Computer and Communications Security",
-    url: "https://www.sigsac.org/ccs/CCS2026",
-    year: "2026",
-    place: "The Hague, Netherlands",
-    dates: "Nov 15–19, 2026",
-    deadlines: [
-      { date: "2026-01-14T23:59:00-12:00", label: "1차 마감" },
-      { date: "2026-04-29T23:59:00-12:00", label: "2차 마감" }
-    ]
+    url: "https://www.sigsac.org/ccs/CCS2027/",
+    year: "2027",
+    place: "Atlanta, GA, USA",
+    dates: "Oct 11–15, 2027",
+    deadlines: []
   },
   {
     category: "security",
     acr: "NDSS",
     full: "ISOC Network and Distributed System Security Symposium",
-    url: "https://www.ndss-symposium.org/ndss2027/submissions/call-for-papers/",
-    year: "2027",
-    place: "Seoul, Republic of Korea",
-    dates: "Mar 22–26, 2027",
-    deadlines: [
-      { date: "2026-05-06T23:59:00-12:00", label: "1차 마감" },
-      { date: "2026-08-19T23:59:00-12:00", label: "2차 마감" }
-    ]
+    url: "https://www.ndss-symposium.org/",
+    year: "2028",
+    place: "TBA",
+    dates: "TBA (NDSS 2027은 양 사이클 모두 마감)",
+    deadlines: []
   },
   {
     category: "security",
     acr: "Euro S&P",
     full: "IEEE European Symposium on Security and Privacy",
-    url: "https://eurosp2026.ieee-security.org/",
-    year: "2026",
-    place: "Lisbon, Portugal",
-    dates: "Jul 6–10, 2026",
+    url: "https://eurosp2027.ieee-security.org/",
+    year: "2027",
+    place: "Madrid, Spain",
+    dates: "Jul 5–9, 2027",
     deadlines: [
-      { date: "2025-11-20T23:59:00-12:00", label: "마감" }
+      { date: "2026-12-02T23:59:00-12:00", label: "마감" }
     ]
   },
   {
@@ -382,38 +376,31 @@ const CONFS = [
     category: "security",
     acr: "ACSAC",
     full: "Annual Computer Security Applications Conference",
-    url: "https://www.acsac.org/2026/submissions/papers/",
-    year: "2026",
-    place: "Los Angeles, CA, USA",
-    dates: "Dec 7–11, 2026",
-    deadlines: [
-      { date: "2026-05-26T23:59:00-12:00", label: "마감" }
-    ]
+    url: "https://www.acsac.org/",
+    year: "2027",
+    place: "TBA",
+    dates: "TBA",
+    deadlines: []
   },
   {
     category: "security",
     acr: "ESORICS",
     full: "European Symposium on Research in Computer Security",
-    url: "https://sites.google.com/di.uniroma1.it/esorics2026/",
-    year: "2026",
-    place: "Rome, Italy",
-    dates: "Sep 14–18, 2026",
-    deadlines: [
-      { date: "2026-01-09T23:59:00-12:00", label: "1차 마감" },
-      { date: "2026-04-21T23:59:00-12:00", label: "2차 마감" }
-    ]
+    url: "https://conf.laas.fr/esorics/",
+    year: "2027",
+    place: "TBA",
+    dates: "Sep 2027 (예정)",
+    deadlines: []
   },
   {
     category: "security",
     acr: "RAID",
     full: "International Symposium on Research in Attacks, Intrusions and Defenses",
     url: "https://raid2026.org",
-    year: "2026",
-    place: "Lancaster, UK",
-    dates: "Oct 11–14, 2026",
-    deadlines: [
-      { date: "2026-04-16T23:59:00-12:00", label: "마감" }
-    ]
+    year: "2027",
+    place: "TBA",
+    dates: "TBA (2027 사이트 미개설)",
+    deadlines: []
   },
 
   // ── AI3 ───────────────────────────────────────────────────
@@ -433,23 +420,23 @@ const CONFS = [
     category: "ai3",
     acr: "ACM MM",
     full: "ACM International Conference on Multimedia",
-    url: "https://2026.acmmm.org/",
-    year: "2026",
-    place: "Rio de Janeiro, Brazil",
-    dates: "Nov 10–14, 2026",
-    deadlines: [
-      { date: "2026-04-01T23:59:00-12:00", label: "마감" }
-    ]
+    url: "https://www.acmmm.org/",
+    year: "2027",
+    place: "Hong Kong",
+    dates: "TBA",
+    deadlines: []
   },
   {
     category: "ai3",
     acr: "AISTATS",
     full: "International Conference on Artificial Intelligence and Statistics",
-    url: "https://virtual.aistats.org/",
+    url: "https://virtual.aistats.org/Conferences/2027/CallForPapers",
     year: "2027",
-    place: "TBA",
-    dates: "TBA",
-    deadlines: []
+    place: "Montreal, Canada",
+    dates: "May 3–6, 2027",
+    deadlines: [
+      { date: "2026-10-06T23:59:59-12:00", label: "마감" }
+    ]
   },
   {
     category: "ai3",
@@ -514,7 +501,7 @@ const CONFS = [
     url: "https://kdd2027.kdd.org/research-track-call-for-papers/",
     year: "2027",
     place: "San Jose, CA, USA",
-    dates: "Aug 1–5, 2027",
+    dates: "Aug 1–5, 2027 · 2차(2027년 2월) 날짜 미공개",
     deadlines: [
       { date: "2026-07-26T23:59:59-12:00", label: "1차 마감" }
     ]
@@ -524,14 +511,12 @@ const CONFS = [
   {
     category: "ai4",
     acr: "AAAI",
-    full: "41st AAAI Conference on Artificial Intelligence",
-    url: "https://aaai.org/conference/aaai/aaai-27/main-technical-track-call/",
-    year: "2027",
-    place: "Montréal, Canada",
-    dates: "Feb 16–23, 2027",
-    deadlines: [
-      { date: "2026-07-28T23:59:59-12:00", label: "마감" }
-    ]
+    full: "42nd AAAI Conference on Artificial Intelligence",
+    url: "https://aaai.org/conference/aaai/",
+    year: "2028",
+    place: "TBA",
+    dates: "TBA (AAAI-27은 마감)",
+    deadlines: []
   },
   {
     category: "ai4",
@@ -547,13 +532,11 @@ const CONFS = [
     category: "ai4",
     acr: "EMNLP",
     full: "Conference on Empirical Methods in Natural Language Processing",
-    url: "https://2026.emnlp.org/calls/main_conference_papers/",
-    year: "2026",
-    place: "Budapest, Hungary",
-    dates: "Oct 24–29, 2026",
-    deadlines: [
-      { date: "2026-05-25T23:59:59-12:00", label: "마감" }
-    ]
+    url: "https://www.emnlp.org/",
+    year: "2027",
+    place: "멕시코 · 중미 (잠정)",
+    dates: "Nov 2027 (예정)",
+    deadlines: []
   },
   {
     category: "ai4",
@@ -570,14 +553,12 @@ const CONFS = [
   {
     category: "ai4",
     acr: "IJCAI",
-    full: "International Joint Conference on Artificial Intelligence (IJCAI-ECAI 2026)",
-    url: "https://2026.ijcai.org/ijcai-ecai-2026-call-for-papers-main-track/",
-    year: "2026",
-    place: "Bremen, Germany",
-    dates: "Aug 15–21, 2026",
-    deadlines: [
-      { date: "2026-01-19T23:59:00-12:00", label: "마감" }
-    ]
+    full: "International Joint Conference on Artificial Intelligence",
+    url: "https://www.ijcai.org/",
+    year: "2027",
+    place: "TBA",
+    dates: "Aug 2027 (예정)",
+    deadlines: []
   },
   {
     category: "ai4",
@@ -594,14 +575,12 @@ const CONFS = [
   {
     category: "ai4",
     acr: "NeurIPS",
-    full: "Fortieth Annual Conference on Neural Information Processing Systems",
-    url: "https://neurips.cc/Conferences/2026/CallForPapers",
-    year: "2026",
-    place: "Sydney, Australia",
-    dates: "Dec 6–12, 2026",
-    deadlines: [
-      { date: "2026-05-06T23:59:00-12:00", label: "마감" }
-    ]
+    full: "Forty-first Annual Conference on Neural Information Processing Systems",
+    url: "https://neurips.cc/",
+    year: "2027",
+    place: "TBA",
+    dates: "Dec 2027 (예정)",
+    deadlines: []
   },
   {
     category: "ai4",
@@ -619,25 +598,24 @@ const CONFS = [
     category: "plse",
     acr: "ICSE",
     full: "International Conference on Software Engineering",
-    url: "https://conf.researchr.org/home/icse-2027",
+    url: "https://conf.researchr.org/track/icse-2027/icse-2027-research-track",
     year: "2027",
     place: "Dublin, Ireland",
     dates: "Apr 25–May 1, 2027",
     deadlines: [
-      { date: "2026-06-30T23:59:59-12:00", label: "마감" }
+      { date: "2026-06-30T23:59:59-12:00", label: "1차 마감" },
+      { date: "2026-10-20T23:59:59-12:00", label: "2차 마감" }
     ]
   },
   {
     category: "plse",
     acr: "POPL",
     full: "ACM SIGPLAN Symposium on Principles of Programming Languages",
-    url: "https://popl27.sigplan.org/",
-    year: "2027",
-    place: "Mexico City, Mexico",
-    dates: "Jan 10–16, 2027",
-    deadlines: [
-      { date: "2026-07-09T23:59:00-12:00", label: "마감" }
-    ]
+    url: "https://conf.researchr.org/series/POPL",
+    year: "2028",
+    place: "TBA",
+    dates: "TBA (POPL 2027은 마감)",
+    deadlines: []
   },
   {
     category: "plse",
