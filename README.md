@@ -1,15 +1,15 @@
 # Conference Deadline Tracker
 
-보안·프라이버시(Security), AI 상위 학회, PL/SE 학회 마감일 카운트다운 사이트입니다. 현재 총 33개 학회를 추적합니다.
+보안·프라이버시(Security), AI 상위 학회, PL/SE 학회 마감일 카운트다운 사이트입니다. 현재 총 37개 학회를 추적합니다.
 
 - **Security** (9): USENIX Security, S&P, CCS, NDSS, Euro S&P, AsiaCCS, ACSAC, ESORICS, RAID
-- **AI3** (9): AAMAS, ACM MM, AISTATS, CICLing, COLING, CoNLL, EACL, IJCNLP, KDD
+- **AI3** (13): AAMAS, ACM MM, AISTATS, CICLing, CIKM, COLING, CoNLL, EACL, IJCNLP, KDD, LREC, SIGIR, WWW
 - **AI4** (8): AAAI, ACL, EMNLP, ICLR, IJCAI, NAACL, NeurIPS, ICML
 - **PL/SE** (7): ICSE, POPL, OOPSLA, ISSTA, ASE, PLDI, FSE — "전체" 필터에는 포함되지 않고 별도 탭에서만 보입니다.
 
 🔗 **사이트**: https://namgyupark22.github.io/mas-sec-deadlines/
 
-카테고리 필터(전체 / Security / AI3 / AI4 / PL/SE)로 원하는 분야만 볼 수 있습니다. "전체"는 Security+AI3+AI4(26개)만 포함하며 PL/SE는 별도 탭에서 확인합니다.
+카테고리 필터(전체 / Security / AI3 / AI4 / PL/SE)로 원하는 분야만 볼 수 있습니다. "전체"는 Security+AI3+AI4(30개)만 포함하며 PL/SE는 별도 탭에서 확인합니다.
 
 ## 데이터 출처
 - Security: [sec-deadlines.github.io](https://sec-deadlines.github.io/)
