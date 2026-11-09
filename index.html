@@ -274,7 +274,7 @@
     <span><b id="total-count">–</b> conferences tracked</span>
     <span><b id="upcoming-count">–</b> deadlines upcoming</span>
     <span>tz: <b id="tz-label">–</b></span>
-    <span>last data sync: <b>2026-10-28</b></span>
+    <span>last data sync: <b>2026-11-09</b></span>
   </div>
 
   <div class="filter-tabs" id="filter-tabs"></div>
@@ -311,7 +311,8 @@ const CONFS = [
     dates: "Aug 11–13, 2027",
     deadlines: [
       { date: "2026-08-25T23:59:00-12:00", label: "1차 마감" },
-      { date: "2027-01-26T23:59:00-12:00", label: "2차 마감" }
+      { date: "2027-01-19T23:59:00-12:00", label: "2차 필수 등록" },
+      { date: "2027-01-26T23:59:00-12:00", label: "2차 논문 마감" }
     ]
   },
   {
@@ -324,7 +325,8 @@ const CONFS = [
     dates: "May 17–20, 2027",
     deadlines: [
       { date: "2026-06-11T23:59:00-12:00", label: "1차 마감" },
-      { date: "2026-11-17T23:59:00-12:00", label: "2차 마감" }
+      { date: "2026-11-10T23:59:00-12:00", label: "2차 초록 등록 (필수)" },
+      { date: "2026-11-17T23:59:00-12:00", label: "2차 논문 마감" }
     ]
   },
   {
@@ -356,7 +358,8 @@ const CONFS = [
     place: "Madrid, Spain",
     dates: "Jul 5–9, 2027",
     deadlines: [
-      { date: "2026-12-02T23:59:00-12:00", label: "마감" }
+      { date: "2026-11-25T23:59:00-12:00", label: "필수 등록 마감" },
+      { date: "2026-12-02T23:59:00-12:00", label: "논문 마감" }
     ]
   },
   {
@@ -457,12 +460,14 @@ const CONFS = [
   {
     category: "ai3",
     acr: "COLING",
-    full: "International Conference on Computational Linguistics",
-    url: "https://coling-iccl.org/",
-    year: "2028",
-    place: "TBA",
-    dates: "TBA (COLING 2027은 마감)",
-    deadlines: []
+    full: "32nd International Conference on Computational Linguistics",
+    url: "https://2027.coling-iccl.org/calls/main_conference_papers/",
+    year: "2027",
+    place: "Macau, China",
+    dates: "May 9–14, 2027 · ARR 제출(10/12)은 마감",
+    deadlines: [
+      { date: "2026-12-23T23:59:00-12:00", label: "commitment 마감" }
+    ]
   },
   {
     category: "ai3",
@@ -481,9 +486,10 @@ const CONFS = [
     url: "https://2027.eacl.org/",
     year: "2027",
     place: "Athens, Greece",
-    dates: "Mar 9–14, 2027",
+    dates: "Mar 9–14, 2027 · commitment(10/11)까지 전부 마감",
     deadlines: [
-      { date: "2026-08-03T23:59:59-12:00", label: "마감" }
+      { date: "2026-08-03T23:59:59-12:00", label: "ARR 제출 마감" },
+      { date: "2026-10-11T23:59:59-12:00", label: "commitment 마감" }
     ]
   },
   {
@@ -505,10 +511,8 @@ const CONFS = [
     url: "https://kdd2027.kdd.org/research-track-call-for-papers/",
     year: "2027",
     place: "San Jose, CA, USA",
-    dates: "Aug 1–5, 2027 · 2차(2027년 2월) 날짜 미공개",
-    deadlines: [
-      { date: "2026-07-26T23:59:59-12:00", label: "1차 마감" }
-    ]
+    dates: "Aug 1–5, 2027 · 1차(7/26) 마감 · 2차는 2027년 2월 엠지만 날짜 미공개",
+    deadlines: []
   },
 
   {
@@ -565,7 +569,7 @@ const CONFS = [
     place: "Kyoto, Japan",
     dates: "Aug 17–22, 2027 · commitment 마감 미공개",
     deadlines: [
-      { date: "2027-01-04T23:59:00-12:00", label: "마감" }
+      { date: "2027-01-04T23:59:00-12:00", label: "ARR 제출 마감" }
     ]
   },
   {
@@ -597,18 +601,21 @@ const CONFS = [
     place: "Kyoto, Japan (+ Hengqin 사텔라이트)",
     dates: "Aug 7–13, 2027",
     deadlines: [
-      { date: "2027-01-11T23:59:00-12:00", label: "마감" }
+      { date: "2027-01-04T23:59:00-12:00", label: "초록 마감" },
+      { date: "2027-01-11T23:59:00-12:00", label: "본문 마감" }
     ]
   },
   {
     category: "ai4",
     acr: "NAACL",
     full: "NAACL-HLT (Nations of the Americas Chapter of the ACL)",
-    url: "https://naacl.org/",
-    year: "2028",
-    place: "TBA",
-    dates: "TBA (NAACL 2027은 마감 · commitment 12/23)",
-    deadlines: []
+    url: "https://2027.naacl.org/calls/main_conference_papers/",
+    year: "2027",
+    place: "San Francisco, CA, USA",
+    dates: "Jun 1–5, 2027 · ARR 제출(10/12)은 마감",
+    deadlines: [
+      { date: "2026-12-23T23:59:00-12:00", label: "commitment 마감" }
+    ]
   },
   {
     category: "ai4",
@@ -624,10 +631,10 @@ const CONFS = [
     category: "ai4",
     acr: "ICML",
     full: "International Conference on Machine Learning",
-    url: "https://icml.cc/Conferences/FutureMeetings",
+    url: "https://icml.cc/Conferences/2027",
     year: "2027",
-    place: "South America (TBA)",
-    dates: "TBA",
+    place: "Rio de Janeiro, Brazil",
+    dates: "Jul 31 – Aug 6, 2027 · 마감 미공개",
     deadlines: []
   },
 
@@ -674,7 +681,8 @@ const CONFS = [
     place: "Singapore",
     dates: "Sep 7–10, 2027",
     deadlines: [
-      { date: "2027-01-11T23:59:59-12:00", label: "마감" }
+      { date: "2027-01-08T23:59:59-12:00", label: "초록 마감 (필수)" },
+      { date: "2027-01-11T23:59:59-12:00", label: "본문 마감" }
     ]
   },
   {
